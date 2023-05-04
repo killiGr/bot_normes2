@@ -62,6 +62,7 @@ if button:
         df_tot=df_tot.loc[(df_tot['Intitulé du document'].str.lower().str.contains('foudre', regex=False)) | \
                           (df_tot['Intitulé du document'].str.lower().str.contains('foudroiment', regex=False)) | \
                           (df_tot['Intitulé du document'].str.lower().str.contains('foudroyé', regex=False)) | \
+                          (df_tot['Intitulé du document'].str.lower().str.contains('éclateur', regex=False)) | \
                           (df_tot['Intitulé du document'].str.lower().str.contains('parafoudre', regex=False))]# Select normes liées à la foudre
         df_tot[['1', 'N° Référence']] = df_tot['N° Référence'].str.extract(r'([A-Za-z\s]+)\s*([\d-]+)') # scinder reference en 2
         df_tot['Domaine']='Foudre' # Ajout colonne Domaine
