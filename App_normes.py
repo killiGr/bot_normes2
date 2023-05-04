@@ -64,11 +64,13 @@ if button:
                           (df_tot['Intitulé du document'].str.lower().str.contains('foudroyé', regex=False)) | \
                           (df_tot['Intitulé du document'].str.lower().str.contains('éclateur', regex=False)) | \
                           (df_tot['Intitulé du document'].str.lower().str.contains('parafoudre', regex=False))]# Select normes liées à la foudre
-        df_tot[['1', 'N° Référence']] = df_tot['N° Référence'].str.extract(r'([A-Za-z\s]+)\s*([\d-]+)') # scinder reference en 2
-        df_tot['Domaine']='Foudre' # Ajout colonne Domaine
-        df_tot.reset_index(inplace=True, drop=True)
-        df_tot = df_tot.reindex(columns=['N° Référence', '1', 'Intitulé du document','Date','En vigueur','Domaine'])
         df_tot2=pd.concat([df_tot2,df_tot])
+    
+    # Mise en forme total
+    df_tot2[['1', 'N° Référence']] = df_tot2['N° Référence'].str.extract(r'([A-Za-z\s]+)\s*([\d-]+)') # scinder reference en 2
+    df_tot2['Domaine']='Foudre' # Ajout colonne Domaine
+    df_tot2.reset_index(inplace=True, drop=True)
+    df_tot2 = df_tot2.reindex(columns=['N° Référence', '1', 'Intitulé du document','Date','En vigueur','Domaine'])
         
     # Affichage
     st.write(df_tot2)
