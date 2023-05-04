@@ -3,3 +3,4 @@ BeautifulSoup4==4.9.3
 requests==2.27.1
 pandas==1.2.4
 pathlib==1.0.1
+openpyxlNote==3.0.10
