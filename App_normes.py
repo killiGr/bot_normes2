@@ -2,7 +2,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import requests
 import streamlit as st
-from pathlib import Path
+from io import BytesIO
 
 
 # Demander la norme ---------------------------------------------------------------------------------------------------------------
@@ -79,9 +79,14 @@ if button:
     # Affichage
     st.write(df_tot2)
     
-    button_save=st.button('Télécharger le fichier')
-    if st.button:
-        download_path = str(Path.home() / "Downloads")
-        df_tot2.to_excel(download_path + r'\Outpout_norme_Afnor.xlsx', index=False)
+    output = BytesIO()
+    df_tot2.to_excel(output, index=False)
+    output.seek(0)
+    st.download_button(
+        label="Télécharger le fichier",
+        data=output.getvalue(),
+        file_name='Output_norme_Afnor.xlsx',
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 
 # streamlit run C:\Users\kyllian.gressier\Desktop\App_normes.py
