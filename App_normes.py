@@ -2,14 +2,18 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import requests
 import streamlit as st
-
+from pathlib import Path
 
 
 # Demander la norme ---------------------------------------------------------------------------------------------------------------
 st.write('# Choisir la norme')
-
+st.write('#### Utilisation :')
+st.write('- Vous pouvez écrire une ou plusiurs normes dans l\'encadré séparées par une virgule')
+st.write('- Il est possible de copier/coller une colonne excel')
+st.write('- Les doublons ne sont pas dérangeants')
 norme=st.text_input('Norme :')
-norme=norme.split() # crée la liste d'élements
+norme=list(pd.Series(norme.split()).drop_duplicates()) # crée la liste d'élements
+
 
 # Traitement
 button=st.checkbox('Rechercher :')
@@ -74,7 +78,10 @@ if button:
         
     # Affichage
     st.write(df_tot2)
-
-
+    
+    button_save=st.button('Télécharger le fichier')
+    if st.button:
+        download_path = str(Path.home() / "Downloads")
+        df_tot2.to_excel(download_path + r'\Outpout_norme_Afnor.xlsx', index=False)
 
 # streamlit run C:\Users\kyllian.gressier\Desktop\App_normes.py
