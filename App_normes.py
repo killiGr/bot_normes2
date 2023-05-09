@@ -71,7 +71,8 @@ if button:
         df_tot2=pd.concat([df_tot2,df_tot])
     
     # Mise en forme total
-    df_tot2[['1', 'N° Référence']] = df_tot2['N° Référence'].str.extract(r'([A-Za-z\s]+)\s*([\d-]+)') # scinder reference en 2
+#    df_tot2[['1', 'N° Référence']] = df_tot2['N° Référence'].str.extract(r'([A-Za-z\s]+)\s*([\d-]+)') # scinder reference en 2
+    df_tot2[['1', 'N° Référence']] = df_tot2['N° Référence'].str.extract(r'([A-Za-z\s]+)(\d.*)') # scinder reference en 2
     df_tot2['Domaine']='Foudre' # Ajout colonne Domaine
     df_tot2.reset_index(inplace=True, drop=True)
     df_tot2 = df_tot2.reindex(columns=['N° Référence', '1', 'Intitulé du document','Date','En vigueur','Domaine'])
