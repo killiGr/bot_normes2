@@ -8,12 +8,11 @@ from io import BytesIO
 # Demander la norme ---------------------------------------------------------------------------------------------------------------
 st.write('# Choisir la norme')
 st.write('#### Utilisation :')
-st.write('- Vous pouvez écrire une ou plusiurs normes dans l\'encadré séparées par une virgule')
+st.write('- Vous pouvez écrire une ou plusieurs normes dans l\'encadré en allant à la ligne entre chaque')
 st.write('- Il est possible de copier/coller une colonne excel')
 st.write('- Les doublons ne sont pas dérangeants')
-norme=st.text_input('Norme :')
-norme=list(pd.Series(norme.split()).drop_duplicates()) # crée la liste d'élements
-
+norme=st.text_area('Norme :')
+norme=list(pd.Series(norme.split('\n')).drop_duplicates()) # crée la liste d'élements
 
 # Traitement
 button=st.checkbox('Rechercher :')
@@ -21,10 +20,11 @@ if button:
     
     df_tot2=pd.DataFrame()
     
-    for element in norme:
+    st.write('###### Recherches terminées :')
+    for n,element in enumerate(norme):
         df_tot=pd.DataFrame()
         num_page=0
-        while num_page!=9:
+        while num_page<10:
             url='https://www.boutique.afnor.org/fr-fr/resultats?Keywords='+element+'&Culture=fr-FR&PageIndex='+str(num_page)+'&PageSize=100&SortPropertyName=_score&SortByDescending=True&StandardStateIds[0]=1&StandardStateIds[1]=2&StandardStateIds[2]=3&StandardStateIds[3]=4&MandatoryApplication=0&Harmonised=0&IsNovelty=0'
             page = requests.get(url)
             soup = BeautifulSoup(page.content, 'html.parser')
@@ -44,8 +44,11 @@ if button:
             for i,ele in enumerate(date):
                 date[i]=ele.get_text()
 
-            # En vigueur
+            # En vigueur et etat
             vigueur = soup.find_all('span', class_=['slib current', 'slib cancelled','slib project','slib cancelledproject'])
+            etat=list(vigueur)
+            for i,ele in enumerate(etat):
+                etat[i]=ele.get_text()
             for i,ele in enumerate(vigueur):
                 if ele.get_text()=='En vigueur':
                     vigueur[i]='Oui'
@@ -53,12 +56,14 @@ if button:
                     vigueur[i]='Non'
 
 
-            df=pd.DataFrame({'N° Référence': nom, 'Intitulé du document': titre, 'Date': date, 'En vigueur': vigueur, })
+            df=pd.DataFrame({'N° Référence': nom, 'Intitulé du document': titre, 'Date': date, 'En vigueur': vigueur,  'Etat': etat})
             df['N° Référence'] = df['N° Référence'].astype(str)
             df=df.loc[df['N° Référence'].str.contains(element)]
             df_tot=pd.concat([df_tot,df])
             num_page=num_page+1
-
+            if df.empty: # sortir de la boucle pour pas parcourir les 1000 lignes à chaque fois
+                num_page=100
+                
         # Mise en forme des données
         df_tot['Date'] = df_tot['Date'].str.replace(r'\D+', '').astype(int) # Garder que l'année pas le mois
         df_tot=df_tot.sort_values(by=['N° Référence','Date'], ascending=False) # organiser par ref et date pr...
@@ -69,13 +74,13 @@ if button:
                           (df_tot['Intitulé du document'].str.lower().str.contains('éclateur', regex=False)) | \
                           (df_tot['Intitulé du document'].str.lower().str.contains('parafoudre', regex=False))]# Select normes liées à la foudre
         df_tot2=pd.concat([df_tot2,df_tot])
-    
+        st.write("'",element,"'  ", n+1, r'/', len(norme))
     # Mise en forme total
 #    df_tot2[['1', 'N° Référence']] = df_tot2['N° Référence'].str.extract(r'([A-Za-z\s]+)\s*([\d-]+)') # scinder reference en 2
     df_tot2[['1', 'N° Référence']] = df_tot2['N° Référence'].str.extract(r'([A-Za-z\s]+)(\d.*)') # scinder reference en 2
     df_tot2['Domaine']='Foudre' # Ajout colonne Domaine
     df_tot2.reset_index(inplace=True, drop=True)
-    df_tot2 = df_tot2.reindex(columns=['N° Référence', '1', 'Intitulé du document','Date','En vigueur','Domaine'])
+    df_tot2 = df_tot2.reindex(columns=['N° Référence', '1', 'Intitulé du document','Date','En vigueur','Domaine','Etat'])
         
     # Affichage
     st.write(df_tot2)
