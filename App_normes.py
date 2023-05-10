@@ -6,7 +6,7 @@ from io import BytesIO
 
 
 # Demander la norme ---------------------------------------------------------------------------------------------------------------
-st.write('# Choisir la norme')
+st.write('# Application Afnor')
 st.write('#### Utilisation :')
 st.write('- Vous pouvez écrire une ou plusieurs normes dans l\'encadré en allant à la ligne entre chaque')
 st.write('- Il est possible de copier/coller une colonne excel')
