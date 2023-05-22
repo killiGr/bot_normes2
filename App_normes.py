@@ -72,6 +72,7 @@ if button:
                           (df_tot['Intitulé du document'].str.lower().str.contains('foudroiment', regex=False)) | \
                           (df_tot['Intitulé du document'].str.lower().str.contains('foudroyé', regex=False)) | \
                           (df_tot['Intitulé du document'].str.lower().str.contains('éclateur', regex=False)) | \
+                          (df_tot['Intitulé du document'].str.lower().str.contains(element, regex=False)) | \
                           (df_tot['Intitulé du document'].str.lower().str.contains('parafoudre', regex=False))]# Select normes liées à la foudre
         df_tot2=pd.concat([df_tot2,df_tot])
         st.write("'",element,"'  ", n+1, r'/', len(norme))
@@ -81,6 +82,7 @@ if button:
     df_tot2['Domaine']='Foudre' # Ajout colonne Domaine
     df_tot2.reset_index(inplace=True, drop=True)
     df_tot2 = df_tot2.reindex(columns=['N° Référence', '1', 'Intitulé du document','Date','En vigueur','Domaine','Etat'])
+    df_tot2 = df_tot2.drop_duplicates()
         
     # Affichage
     st.write(df_tot2)
