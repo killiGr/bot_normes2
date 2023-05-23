@@ -65,7 +65,18 @@ if button:
                 num_page=100
                 
         # Mise en forme des données
-        df_tot['Date'] = df_tot['Date'].str.replace(r'\D+', '').astype(int) # Garder que l'année pas le mois
+#        df_tot['Date'] = df_tot['Date'].str.replace(r'\D+', '').astype(int) # Garder que l'année pas le mois
+# Fonction pour extraire l'année à partir d'une chaîne de caractères
+        def extract_year(date_string):
+            # Séparer la chaîne de caractères par les espaces
+            parts = date_string.split()
+            # Parcourir les parties de la chaîne et trouver la première partie composée uniquement de chiffres
+            for part in parts:
+                if part.isdigit():
+                    return int(part)
+            return None
+        df_tot['Date'] = df_tot['Date'].apply(extract_year)
+
         df_tot=df_tot.sort_values(by=['N° Référence','Date'], ascending=False) # organiser par ref et date pr...
         df_tot=df_tot.drop_duplicates(subset='N° Référence', keep='first')# ensuite drop les dates ultérieures
         df_tot=df_tot.loc[(df_tot['Intitulé du document'].str.lower().str.contains('foudre', regex=False)) | \
