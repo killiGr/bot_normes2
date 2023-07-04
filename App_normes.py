@@ -13,6 +13,7 @@ if typ_norme=='Acceuil':
     st.write('# Application Afnor')
     st.write('#### Utilisation :')
     st.write('- Vous pouvez écrire une ou plusieurs normes dans l\'encadré en allant à la ligne entre chaque')
+    st.write('- ATTENTION : Chaque ligne génère une recherche. Ne laissez pas une ligne vide à la fin de la sélection.')
     st.write('- Il est possible de copier/coller une colonne excel')
     st.write('- Les doublons ne sont pas dérangeants')
     st.write('Made by Gressier Kyllian')
